@@ -18,24 +18,31 @@ public sealed class StreamingSpeechRequest
     public StreamingSpeechTextPart[] Text { get; set; } = null!;
 
     [JsonPropertyName("voice")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Voice { get; set; }
 
     [JsonPropertyName("outputFormat")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public AudioFormat? OutputFormat { get; set; }
 
     [JsonPropertyName("instructions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Instructions { get; set; }
 
     [JsonPropertyName("speed")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? Speed { get; set; }
 
     [JsonPropertyName("language")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Language { get; set; }
 
     [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 
     [JsonPropertyName("includeRawChunks")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? IncludeRawChunks { get; set; }
 }
 
@@ -52,9 +59,11 @@ public sealed class StreamingSpeechTextPart
 
     /// <summary>Defaults to the request's voice, or the provider's default voice.</summary>
     [JsonPropertyName("voice")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Voice { get; set; }
 
     [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 }
 
@@ -62,15 +71,19 @@ public sealed class StreamingSpeechUsage
 {
     /// <summary>Number of input Unicode code points, if reported by the provider.</summary>
     [JsonPropertyName("inputCharacters")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public long? InputCharacters { get; set; }
 
     [JsonPropertyName("inputTokens")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public long? InputTokens { get; set; }
 
     [JsonPropertyName("outputTokens")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public long? OutputTokens { get; set; }
 
     [JsonPropertyName("raw")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? Raw { get; set; }
 }
 
@@ -92,6 +105,7 @@ public sealed class SpeechStreamStartPart : StreamingSpeechPart
 public sealed class SpeechAudioPart : StreamingSpeechPart
 {
     [JsonPropertyName("id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Id { get; set; }
 
     /// <summary>
@@ -105,21 +119,26 @@ public sealed class SpeechAudioPart : StreamingSpeechPart
     public AudioFormat AudioFormat { get; set; } = null!;
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 }
 
 public sealed class SpeechResponseMetadataPart : StreamingSpeechPart
 {
     [JsonPropertyName("timestamp")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public DateTime? Timestamp { get; set; }
 
     [JsonPropertyName("modelId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? ModelId { get; set; }
 
     [JsonPropertyName("headers")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IDictionary<string, string>? Headers { get; set; }
 
     [JsonPropertyName("body")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Body { get; set; }
 }
 
@@ -127,9 +146,11 @@ public sealed class SpeechResponseMetadataPart : StreamingSpeechPart
 public sealed class SpeechFinishPart : StreamingSpeechPart
 {
     [JsonPropertyName("usage")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public StreamingSpeechUsage? Usage { get; set; }
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 }
 

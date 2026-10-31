@@ -15,14 +15,17 @@ public class UIRequest
     public string CatalogPrompt { get; set; } = null!;
 
     [JsonPropertyName("context")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Context { get; set; }
 
     [JsonPropertyName("temperature")]
-    public float Temperature { get; set; } = 1;
+    public double Temperature { get; set; } = 1;
 
     [JsonPropertyName("maxOutputTokens")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MaxOutputTokens { get; set; }
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 }

@@ -10,9 +10,11 @@ public class Tool
     public string Name { get; set; } = default!;
 
     [JsonPropertyName("description")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Description { get; set; }
 
     [JsonPropertyName("title")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Title { get; set; }
 
     [JsonPropertyName("defer_loading")]
@@ -24,9 +26,11 @@ public class Tool
     public IEnumerable<string>? AllowedCallers { get; set; }
 
     [JsonPropertyName("inputSchema")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ToolSchema? InputSchema { get; set; }
 
     [JsonPropertyName("outputSchema")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ToolSchema? OutputSchema { get; set; }
 }
 
@@ -36,6 +40,7 @@ public class ToolSchema
     public string Type { get; set; } = default!;
 
     [JsonPropertyName("properties")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, object>? Properties { get; set; }
 
     [JsonPropertyName("required")]

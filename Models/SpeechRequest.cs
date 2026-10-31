@@ -19,21 +19,27 @@ public class SpeechRequest
     public string Text { get; set; } = null!;
 
     [JsonPropertyName("voice")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Voice { get; set; }
 
     [JsonPropertyName("outputFormat")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? OutputFormat { get; set; }
 
     [JsonPropertyName("instructions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Instructions { get; set; }
 
     [JsonPropertyName("speed")]
-    public float? Speed { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? Speed { get; set; }
 
     [JsonPropertyName("language")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Language { get; set; }
 
     [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 
 }
@@ -44,6 +50,7 @@ public class SpeechRequest
 public class SpeechResponse
 {
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 
     /// <summary>
@@ -59,6 +66,7 @@ public class SpeechResponse
     public ResponseData Response { get; set; } = default!;
 
     [JsonPropertyName("request")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public SpeechRequestItem? Request { get; set; }
 
 }
@@ -68,6 +76,7 @@ public class SpeechRequestItem
          * Provider HTTP request body payload (available only for providers that use HTTP requests).
          */
     [JsonPropertyName("body")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Body { get; set; }
 }
 
@@ -76,7 +85,7 @@ public class SpeechAudioResponse
     [JsonPropertyName("base64")]
     public string Base64 { get; set; } = null!;
 
-    [JsonPropertyName("mimeType")]
+    [JsonPropertyName("mediaType")]
     public string MimeType { get; set; } = null!;
 
     [JsonPropertyName("format")]

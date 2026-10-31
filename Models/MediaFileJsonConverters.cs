@@ -14,20 +14,25 @@ public sealed class ImageFileJsonConverter : JsonConverter<ImageFile>
         var root = document.RootElement;
         var type = MediaFileJson.ReadType(root, options);
         if (type == "url")
-            return new ImageFileUrl { Url = MediaFileJson.RequiredString(root, "url", options) };
+            return new ImageFileUrl
+            {
+                Url = MediaFileJson.RequiredString(root, "url", options),
+                ProviderOptions = MediaFileJson.ReadProviderOptions(root, options)
+            };
 
         return new ImageFile
         {
             Type = type,
             Data = MediaFileJson.RequiredString(root, "data", options),
             MediaType = type == "file" ? MediaFileJson.RequiredString(root, "mediaType", options)
-                : MediaFileJson.OptionalString(root, "mediaType", options)
+                : MediaFileJson.OptionalString(root, "mediaType", options),
+            ProviderOptions = MediaFileJson.ReadProviderOptions(root, options)
         };
     }
 
     public override void Write(Utf8JsonWriter writer, ImageFile value, JsonSerializerOptions options)
         => MediaFileJson.Write(writer, value.Type, value is ImageFileUrl url ? url.Url : null,
-            value.MediaType, value.Data);
+            value.MediaType, value.Data, value.ProviderOptions, options);
 }
 
 public sealed class VideoFileJsonConverter : JsonConverter<VideoFile>
@@ -40,20 +45,25 @@ public sealed class VideoFileJsonConverter : JsonConverter<VideoFile>
         var root = document.RootElement;
         var type = MediaFileJson.ReadType(root, options);
         if (type == "url")
-            return new VideoFileUrl { Url = MediaFileJson.RequiredString(root, "url", options) };
+            return new VideoFileUrl
+            {
+                Url = MediaFileJson.RequiredString(root, "url", options),
+                ProviderOptions = MediaFileJson.ReadProviderOptions(root, options)
+            };
 
         return new VideoFile
         {
             Type = type,
             Data = MediaFileJson.RequiredString(root, "data", options),
             MediaType = type == "file" ? MediaFileJson.RequiredString(root, "mediaType", options)
-                : MediaFileJson.OptionalString(root, "mediaType", options)
+                : MediaFileJson.OptionalString(root, "mediaType", options),
+            ProviderOptions = MediaFileJson.ReadProviderOptions(root, options)
         };
     }
 
     public override void Write(Utf8JsonWriter writer, VideoFile value, JsonSerializerOptions options)
         => MediaFileJson.Write(writer, value.Type, value is VideoFileUrl url ? url.Url : null,
-            value.MediaType, value.Data);
+            value.MediaType, value.Data, value.ProviderOptions, options);
 }
 
 internal static class MediaFileJson
@@ -110,7 +120,32 @@ internal static class MediaFileJson
         return null;
     }
 
-    internal static void Write(Utf8JsonWriter writer, string type, string? url, string? mediaType, string? data)
+    internal static Dictionary<string, JsonElement>? ReadProviderOptions(
+        JsonElement root,
+        JsonSerializerOptions options)
+    {
+        foreach (var property in root.EnumerateObject())
+        {
+            if (!string.Equals(property.Name, "providerOptions", options.PropertyNameCaseInsensitive
+                    ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+                continue;
+            if (property.Value.ValueKind == JsonValueKind.Null)
+                return null;
+            if (property.Value.ValueKind != JsonValueKind.Object)
+                throw new JsonException("Media input 'providerOptions' must be an object.");
+            return property.Value.Deserialize<Dictionary<string, JsonElement>>(options);
+        }
+        return null;
+    }
+
+    internal static void Write(
+        Utf8JsonWriter writer,
+        string type,
+        string? url,
+        string? mediaType,
+        string? data,
+        Dictionary<string, JsonElement>? providerOptions,
+        JsonSerializerOptions options)
     {
         var error = Validate(type, url, mediaType, data).FirstOrDefault();
         if (error is not null)
@@ -127,6 +162,11 @@ internal static class MediaFileJson
         {
             writer.WriteString("mediaType", mediaType);
             writer.WriteString("data", data);
+        }
+        if (providerOptions is not null)
+        {
+            writer.WritePropertyName("providerOptions");
+            JsonSerializer.Serialize(writer, providerOptions, options);
         }
         writer.WriteEndObject();
     }
