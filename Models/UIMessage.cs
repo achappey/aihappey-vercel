@@ -13,17 +13,24 @@ public enum Role
 
 public class UIMessage
 {
+    [JsonPropertyName("id")]
     public string Id { get; init; } = default!;
 
+    [JsonPropertyName("role")]
     public Role Role { get; init; }
 
+    [JsonPropertyName("parts")]
     public List<UIMessagePart> Parts { get; set; } = [];
 
+    [JsonPropertyName("metadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, object>? Metadata { get; init; }
 }
 
 public class CreateUIMessage : UIMessage
 {
+    [JsonPropertyName("id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public new string? Id { get; init; }
 }
 
@@ -38,6 +45,14 @@ public class TextUIPart : UIMessagePart
 {
     [JsonPropertyName("text")]
     public string Text { get; init; } = default!;
+
+    [JsonPropertyName("state")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? State { get; init; }
+
+    [JsonPropertyName("citations")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<JsonElement>? Citations { get; init; }
 
     [JsonPropertyName("type")]
     public override string Type { get; init; } = "text";
@@ -73,6 +88,10 @@ public class TextEndUIMessageStreamPart : UIMessagePart
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, object>? ProviderMetadata { get; init; }
 
+    [JsonPropertyName("citations")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<JsonElement>? Citations { get; init; }
+
 }
 
 public class TextDeltaUIMessageStreamPart : UIMessagePart
@@ -101,9 +120,15 @@ public class ReasoningUIPart : UIMessagePart
     public string Text { get; init; } = default!;
 
     [JsonPropertyName("id")]
-    public string Id { get; init; } = default!;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Id { get; init; }
+
+    [JsonPropertyName("state")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? State { get; init; }
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, object>? ProviderMetadata { get; init; }
 }
 
@@ -187,6 +212,14 @@ public class ToolCallPart : UIMessagePart
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Title { get; set; }
 
+    [JsonPropertyName("dynamic")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? Dynamic { get; init; }
+
+    [JsonPropertyName("toolMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, JsonElement>? ToolMetadata { get; init; }
+
     public static ToolCallPart CreateProviderExecuted(string id, string toolName, object input) =>
         new()
         {
@@ -217,6 +250,18 @@ public class ToolCallStreamingStartPart : UIMessagePart
     [JsonPropertyName("providerExecuted")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? ProviderExecuted { get; init; }
+
+    [JsonPropertyName("inputEncoding")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? InputEncoding { get; init; }
+
+    [JsonPropertyName("dynamic")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? Dynamic { get; init; }
+
+    [JsonPropertyName("toolMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, JsonElement>? ToolMetadata { get; init; }
 
     [JsonPropertyName("title")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -267,6 +312,10 @@ public class ToolOutputAvailablePart : UIMessagePart
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Dynamic { get; init; }
 
+    [JsonPropertyName("toolMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, JsonElement>? ToolMetadata { get; init; }
+
     [JsonPropertyName("preliminary")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Preliminary { get; init; }
@@ -296,6 +345,10 @@ public class ToolOutputErrorPart : UIMessagePart
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Dynamic { get; init; }
 
+    [JsonPropertyName("toolMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, JsonElement>? ToolMetadata { get; init; }
+
     [JsonPropertyName("providerMetadata")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, Dictionary<string, object>?>? ProviderMetadata { get; init; }
@@ -304,13 +357,35 @@ public class ToolOutputErrorPart : UIMessagePart
 public class ToolApproval
 {
     [JsonPropertyName("approved")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Approved { get; init; }
 
-    [JsonPropertyName("Id")]
+    [JsonPropertyName("id")]
     public string Id { get; init; } = default!;
 
     [JsonPropertyName("reason")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Reason { get; init; }
+
+    [JsonPropertyName("descriptor")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public object? Descriptor { get; init; }
+
+    [JsonPropertyName("requestReason")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? RequestReason { get; init; }
+
+    [JsonPropertyName("isAutomatic")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? IsAutomatic { get; init; }
+
+    [JsonPropertyName("signature")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Signature { get; init; }
+
+    [JsonPropertyName("inputSchemaInput")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public object? InputSchemaInput { get; init; }
 }
 
 public class ToolInvocationPart : UIMessagePart
@@ -319,10 +394,23 @@ public class ToolInvocationPart : UIMessagePart
     public string ToolCallId { get; init; } = default!;
 
     [JsonPropertyName("title")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Title { get; init; }
+
+    [JsonPropertyName("toolName")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? ToolName { get; init; }
 
     [JsonPropertyName("input")]
     public object Input { get; init; } = default!;
+
+    [JsonPropertyName("rawInput")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public object? RawInput { get; init; }
+
+    [JsonPropertyName("inputEncoding")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? InputEncoding { get; init; }
 
     // Add other properties as sent by the client
     [JsonPropertyName("state")]
@@ -331,12 +419,28 @@ public class ToolInvocationPart : UIMessagePart
     [JsonPropertyName("output")]
     public object Output { get; set; } = default!;
 
+    [JsonPropertyName("errorText")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? ErrorText { get; init; }
+
     [JsonPropertyName("type")]
     public override string Type { get; init; } = default!;
 
     [JsonPropertyName("providerExecuted")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? ProviderExecuted { get; init; }
+
+    [JsonPropertyName("dynamic")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? Dynamic { get; init; }
+
+    [JsonPropertyName("toolMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, JsonElement>? ToolMetadata { get; init; }
+
+    [JsonPropertyName("preliminary")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? Preliminary { get; init; }
 
     [JsonPropertyName("approval")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -409,6 +513,10 @@ public class FileUIPart : UIMessagePart
     [JsonPropertyName("filename")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Filename { get; init; }
+
+    [JsonPropertyName("providerReference")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, string>? ProviderReference { get; init; }
 
     [JsonPropertyName("providerMetadata")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -491,7 +599,7 @@ public sealed record FinishMessageMetadata
     public required DateTimeOffset Timestamp { get; init; }
 
     [JsonPropertyName("temperature")]
-    public float? Temperature { get; init; }
+    public double? Temperature { get; init; }
 
     [JsonPropertyName("providerMetadata")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -519,7 +627,7 @@ public sealed record FinishMessageMetadata
         int? outputTokens = null,
         int? inputTokens = null,
         int? totalTokens = null,
-        float? temperature = null,
+        double? temperature = null,
         int? reasoningTokens = null,
         int? cachedInputTokens = null,
         int? cachedInputReadTokens = null,
@@ -790,6 +898,7 @@ public class FinishUIPart : UIMessagePart
     public FinishMessageMetadata? MessageMetadata { get; init; }
 
     [JsonPropertyName("finishReason")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? FinishReason { get; init; }
 
 }
@@ -839,6 +948,7 @@ public class AbortUIPart : UIMessagePart
     public override string Type { get; init; } = "abort";
 
     [JsonPropertyName("reason")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Reason { get; init; }
 
 }
@@ -854,6 +964,26 @@ public class ToolApprovalRequestUIPart : UIMessagePart
 
     [JsonPropertyName("toolCallId")]
     public string ToolCallId { get; init; } = default!;
+
+    [JsonPropertyName("approvalDescriptor")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public object? ApprovalDescriptor { get; init; }
+
+    [JsonPropertyName("inputSchemaInput")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public object? InputSchemaInput { get; init; }
+
+    [JsonPropertyName("reason")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Reason { get; init; }
+
+    [JsonPropertyName("isAutomatic")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? IsAutomatic { get; init; }
+
+    [JsonPropertyName("signature")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Signature { get; init; }
 
 }
 
@@ -910,10 +1040,14 @@ public class UIMessagePartConverter : JsonConverter<UIMessagePart>
 
         string typeProp = root.GetProperty("type").GetString() ?? throw new ArgumentException();
 
+        if (typeProp == "dynamic-tool")
+            return JsonSerializer.Deserialize<ToolInvocationPart>(root.GetRawText(), options);
+
         if (typeProp != null
             && typeProp.StartsWith("tool-")
             && !typeProp.StartsWith("tool-input")
             && !typeProp.StartsWith("tool-output")
+            && typeProp != "tool-approval-request"
             && typeProp != "tool-call")
         {
             return JsonSerializer.Deserialize<ToolInvocationPart>(root.GetRawText(), options);

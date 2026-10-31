@@ -29,6 +29,7 @@ public class TranscriptionRequest
     public string MediaType { get; set; } = null!;
 
     [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 
 }
@@ -39,16 +40,19 @@ public class TranscriptionRequest
 public class TranscriptionResponse
 {
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 
     [JsonPropertyName("text")]
     public string Text { get; set; } = null!;
 
     [JsonPropertyName("language")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Language { get; set; }
 
     [JsonPropertyName("durationInSeconds")]
-    public float? DurationInSeconds { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? DurationInSeconds { get; set; }
 
     [JsonPropertyName("warnings")]
     public IEnumerable<object> Warnings { get; set; } = [];
@@ -63,6 +67,7 @@ public class TranscriptionResponse
         * Optional request information for telemetry and debugging purposes.
         */
     [JsonPropertyName("request")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public TranscriptionRequestItem? Request { get; set; }
 
 }
@@ -75,6 +80,7 @@ public class TranscriptionRequestItem
          */
 
     [JsonPropertyName("body")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Body { get; set; }
 }
 
@@ -84,10 +90,10 @@ public class TranscriptionSegment
     public string Text { get; set; } = null!;
 
     [JsonPropertyName("startSecond")]
-    public float StartSecond { get; set; }
+    public double StartSecond { get; set; }
 
     [JsonPropertyName("endSecond")]
-    public float EndSecond { get; set; }
+    public double EndSecond { get; set; }
 
 
 }

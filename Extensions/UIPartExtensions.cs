@@ -28,7 +28,7 @@ public static class UIPartExtensions
        int outputTokens,
        int inputTokens,
        int totalTokens,
-       float? temperature,
+       double? temperature,
        int? reasoningTokens = null,
        int? cachedInputTokens = null,
        Dictionary<string, object>? extraMetadata = null
@@ -112,6 +112,5 @@ public static class UIPartExtensions
 
 
 }
-
 
 

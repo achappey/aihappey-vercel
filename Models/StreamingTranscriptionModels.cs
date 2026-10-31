@@ -17,9 +17,11 @@ public sealed class StreamingTranscriptionRequest
     public AudioFormat InputAudioFormat { get; set; } = null!;
 
     [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 
     [JsonPropertyName("includeRawChunks")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? IncludeRawChunks { get; set; }
 }
 
@@ -29,7 +31,8 @@ public sealed class AudioFormat
     public string Type { get; set; } = null!;
 
     [JsonPropertyName("rate")]
-    public int? Rate { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? Rate { get; set; }
 }
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
@@ -52,69 +55,85 @@ public sealed class TranscriptionStreamStartPart : StreamingTranscriptionPart
 public sealed class TranscriptionDeltaPart : StreamingTranscriptionPart
 {
     [JsonPropertyName("id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Id { get; set; }
 
     [JsonPropertyName("delta")]
     public string Delta { get; set; } = null!;
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 }
 
 public sealed class TranscriptionPartialPart : StreamingTranscriptionPart
 {
     [JsonPropertyName("id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Id { get; set; }
 
     [JsonPropertyName("text")]
     public string Text { get; set; } = null!;
 
     [JsonPropertyName("startSecond")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? StartSecond { get; set; }
 
     [JsonPropertyName("durationInSeconds")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? DurationInSeconds { get; set; }
 
     [JsonPropertyName("channelIndex")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? ChannelIndex { get; set; }
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 }
 
 public sealed class TranscriptionFinalPart : StreamingTranscriptionPart
 {
     [JsonPropertyName("id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Id { get; set; }
 
     [JsonPropertyName("text")]
     public string Text { get; set; } = null!;
 
     [JsonPropertyName("startSecond")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? StartSecond { get; set; }
 
     [JsonPropertyName("endSecond")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? EndSecond { get; set; }
 
     [JsonPropertyName("channelIndex")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? ChannelIndex { get; set; }
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 }
 
 public sealed class TranscriptionResponseMetadataPart : StreamingTranscriptionPart
 {
     [JsonPropertyName("timestamp")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public DateTime? Timestamp { get; set; }
 
     [JsonPropertyName("modelId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? ModelId { get; set; }
 
     [JsonPropertyName("headers")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IDictionary<string, string>? Headers { get; set; }
 
     [JsonPropertyName("body")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Body { get; set; }
 }
 
@@ -127,12 +146,19 @@ public sealed class TranscriptionFinishPart : StreamingTranscriptionPart
     public IEnumerable<TranscriptionSegment> Segments { get; set; } = [];
 
     [JsonPropertyName("language")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Language { get; set; }
 
     [JsonPropertyName("durationInSeconds")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? DurationInSeconds { get; set; }
 
+    [JsonPropertyName("usage")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, JsonElement>? Usage { get; set; }
+
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 }
 

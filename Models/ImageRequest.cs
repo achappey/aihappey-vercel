@@ -16,26 +16,38 @@ namespace AIHappey.Vercel.Models;
 /// </summary>
 public class ImageRequest
 {
-
+    [JsonPropertyName("model")]
     public string Model { get; set; } = null!;
 
+    [JsonPropertyName("prompt")]
     public string Prompt { get; set; } = null!;
 
+    [JsonPropertyName("size")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Size { get; set; }
 
+    [JsonPropertyName("aspectRatio")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? AspectRatio { get; set; }
 
+    [JsonPropertyName("seed")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Seed { get; set; }
 
+    [JsonPropertyName("n")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? N { get; set; }
 
     [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 
     [JsonPropertyName("files")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<ImageFile>? Files { get; set; }
 
     [JsonPropertyName("mask")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ImageFile? Mask { get; set; }
 
 }
@@ -50,6 +62,10 @@ public class ImageFile : IValidatableObject
     public string? MediaType { get; set; }
 
     public string? Data { get; set; }
+
+    [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         => MediaFileJson.Validate(Type, this is ImageFileUrl url ? url.Url : null, MediaType, Data);
@@ -71,12 +87,14 @@ public class ImageResponse
     /// Provider-specific metadata (opaque JSON).
     /// </summary>
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 
     /// <summary>
     /// Generated images as <c>data:image/...;base64,...</c> strings.
     /// </summary>
     [JsonPropertyName("images")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<string>? Images { get; set; }
 
     [JsonPropertyName("warnings")]
@@ -86,6 +104,7 @@ public class ImageResponse
     public HeaderResponseData Response { get; set; } = default!;
 
     [JsonPropertyName("usage")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ImageUsageData? Usage { get; set; }
 }
 
@@ -99,6 +118,7 @@ public class HeaderResponseData
     public DateTime Timestamp { get; set; }
 
     [JsonPropertyName("headers")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IDictionary<string, string>? Headers { get; set; }
 }
 
@@ -112,9 +132,11 @@ public class ResponseData
     public DateTime Timestamp { get; set; }
 
     [JsonPropertyName("headers")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IDictionary<string, string>? Headers { get; set; }
 
     [JsonPropertyName("body")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Body { get; set; }
 }
 

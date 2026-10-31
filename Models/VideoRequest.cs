@@ -6,38 +6,54 @@ namespace AIHappey.Vercel.Models;
 
 public class VideoRequest
 {
+    [JsonPropertyName("model")]
     public string Model { get; set; } = null!;
 
+    [JsonPropertyName("prompt")]
     public string Prompt { get; set; } = null!;
 
     [JsonPropertyName("resolution")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Resolution { get; set; }
 
     [JsonPropertyName("aspectRatio")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? AspectRatio { get; set; }
 
+    [JsonPropertyName("seed")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Seed { get; set; }
 
-    public int? Duration { get; set; }
+    [JsonPropertyName("duration")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? Duration { get; set; }
 
     [JsonPropertyName("fps")]
-    public int? Fps { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? Fps { get; set; }
 
+    [JsonPropertyName("n")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? N { get; set; }
 
     [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 
     [JsonPropertyName("image")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public VideoFile? Image { get; set; }
 
     [JsonPropertyName("inputReferences")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<VideoFile>? InputReferences { get; set; }
 
     [JsonPropertyName("frameImages")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<VideoFrameImage>? FrameImages { get; set; }
 
     [JsonPropertyName("generateAudio")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? GenerateAudio { get; set; }
 
 }
@@ -47,6 +63,7 @@ public class VideoFrameImage
     [JsonPropertyName("frameType")]
     public string FrameType { get; set; } = null!;  // 'first_frame' or 'last_frame'
 
+    [JsonPropertyName("image")]
     public VideoFile Image { get; set; } = null!;
 }
 
@@ -58,6 +75,10 @@ public class VideoFile : IValidatableObject
     public string? MediaType { get; set; }
 
     public string? Data { get; set; }
+
+    [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         => MediaFileJson.Validate(Type, this is VideoFileUrl url ? url.Url : null, MediaType, Data);
@@ -74,9 +95,11 @@ public class VideoFileUrl : VideoFile
 public class VideoResponse
 {
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 
     [JsonPropertyName("videos")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<VideoResponseFile>? Videos { get; set; }
 
     [JsonPropertyName("warnings")]
@@ -92,7 +115,12 @@ public class VideoResponseFile
     public string Type { get; set; } = "base64";
 
     [JsonPropertyName("data")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string Data { get; set; } = null!;
+
+    [JsonPropertyName("url")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Url { get; set; }
 
     [JsonPropertyName("mediaType")]
     public string MediaType { get; set; } = null!;
@@ -124,6 +152,7 @@ public sealed class VideoOperationStartResult
 /// Concrete pending, completed, and error types preserve the Vercel V4
 /// discriminated-union JSON shape.
 /// </summary>
+[JsonConverter(typeof(VideoOperationStatusResultJsonConverter))]
 public abstract class VideoOperationStatusResult
 {
     [JsonPropertyName("status")]
@@ -179,6 +208,73 @@ public sealed class VideoOperationVideoData
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Data { get; set; }
 
+    [JsonPropertyName("url")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Url { get; set; }
+
     [JsonPropertyName("mediaType")]
     public string MediaType { get; set; } = null!;
+}
+
+public sealed class VideoOperationStatusResultJsonConverter : JsonConverter<VideoOperationStatusResult>
+{
+    public override VideoOperationStatusResult Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var root = document.RootElement;
+        if (root.ValueKind != JsonValueKind.Object
+            || !root.TryGetProperty("status", out var status)
+            || status.ValueKind != JsonValueKind.String)
+            throw new JsonException("A video operation status requires a string 'status' discriminator.");
+
+        return status.GetString() switch
+        {
+            "pending" => root.Deserialize<VideoOperationPendingResult>(options)
+                ?? throw new JsonException("Video operation status cannot be null."),
+            "completed" => root.Deserialize<VideoOperationCompletedResult>(options)
+                ?? throw new JsonException("Video operation status cannot be null."),
+            "error" => root.Deserialize<VideoOperationErrorResult>(options)
+                ?? throw new JsonException("Video operation status cannot be null."),
+            var value => throw new JsonException($"Unsupported video operation status '{value}'.")
+        };
+    }
+
+    public override void Write(
+        Utf8JsonWriter writer,
+        VideoOperationStatusResult value,
+        JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WriteString("status", value.Status);
+        Write("providerMetadata", value.ProviderMetadata);
+        Write("response", value.Response);
+
+        switch (value)
+        {
+            case VideoOperationPendingResult pending:
+                Write("warnings", pending.Warnings);
+                break;
+            case VideoOperationCompletedResult completed:
+                Write("videos", completed.Videos);
+                Write("warnings", completed.Warnings);
+                break;
+            case VideoOperationErrorResult error:
+                Write("error", error.Error);
+                break;
+            default:
+                throw new JsonException($"Unsupported video operation result type '{value.GetType()}'.");
+        }
+
+        writer.WriteEndObject();
+
+        void Write<T>(string name, T? property)
+        {
+            if (property is null) return;
+            writer.WritePropertyName(name);
+            JsonSerializer.Serialize(writer, property, options);
+        }
+    }
 }

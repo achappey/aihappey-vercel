@@ -15,24 +15,30 @@ public class ChatRequest
     public string Model { get; set; } = null!;
 
     [JsonPropertyName("toolChoice")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? ToolChoice { get; set; }
 
     [JsonPropertyName("maxToolCalls")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MaxToolCalls { get; set; }
 
     [JsonPropertyName("temperature")]
-    public float Temperature { get; set; } = 1;
+    public double Temperature { get; set; } = 1;
 
     [JsonPropertyName("topP")]
-    public float? TopP { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? TopP { get; set; }
 
     [JsonPropertyName("maxOutputTokens")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MaxOutputTokens { get; set; }
 
     [JsonPropertyName("tools")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<Tool>? Tools { get; set; } = [];
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 
     [JsonIgnore]
@@ -43,6 +49,7 @@ public class ChatRequest
     public object? ResponseFormat { get; set; }
 
     [JsonPropertyName("verbosity")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Verbosity { get; set; }
 
 
@@ -73,4 +80,3 @@ public class JSONSchema
 
 
 }
-

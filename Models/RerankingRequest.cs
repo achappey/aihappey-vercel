@@ -19,6 +19,7 @@ public class RerankingRequest
     public int? TopN { get; set; }
 
     [JsonPropertyName("providerOptions")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderOptions { get; set; }
 }
 
@@ -34,6 +35,7 @@ public class RerankingDocument
 public class RerankResponseData : ResponseData
 {
     [JsonPropertyName("id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Id { get; set; }
 }
 
@@ -49,6 +51,7 @@ public class RerankingResponse
     public RerankResponseData Response { get; set; } = default!;
 
     [JsonPropertyName("providerMetadata")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, JsonElement>? ProviderMetadata { get; set; }
 }
 
@@ -58,5 +61,5 @@ public class RerankingRanking
     public required int Index { get; init; }
 
     [JsonPropertyName("relevanceScore")]
-    public required float RelevanceScore { get; init; }
+    public required double RelevanceScore { get; init; }
 }
