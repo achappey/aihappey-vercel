@@ -187,6 +187,10 @@ public class ToolApprovalRequestPart : UIMessagePart
 
     [JsonPropertyName("approvalId")]
     public string ApprovalId { get; init; } = default!;
+
+    [JsonPropertyName("signature")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Signature { get; init; }
 }
 
 
