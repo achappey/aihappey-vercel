@@ -15,6 +15,11 @@ public static class RequestExtensions
         return request.ProviderOptions.GetProviderMetadata<T>(providerId);
     }
 
+     public static T? GetProviderMetadata<T>(this StreamingSpeechRequest request, string providerId)
+    {
+        return request.ProviderOptions.GetProviderMetadata<T>(providerId);
+    }
+
     public static T? GetProviderMetadata<T>(this ImageRequest request, string providerId)
     {
         return request.ProviderOptions.GetProviderMetadata<T>(providerId);
