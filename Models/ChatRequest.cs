@@ -23,7 +23,8 @@ public class ChatRequest
     public int? MaxToolCalls { get; set; }
 
     [JsonPropertyName("temperature")]
-    public double Temperature { get; set; } = 1;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public double? Temperature { get; set; }
 
     [JsonPropertyName("topP")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
